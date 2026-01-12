@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ENHYPEN Photocard Archive</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .app {
+      padding: 20px;
+    }
+    .logo {
+      width: 180px;
+      display: block;
+      margin: 20px auto;
+    }
+    h1 {
+      text-align: center;
+      letter-spacing: 4px;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    button {
+      background: #222;
+      color: white;
+      border: 1px solid #333;
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+    .card {
+      background: #111;
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 16px;
+    }
+    .card img {
+      width: 100%;
+      border-radius: 12px;
+      height: 220px;
+      object-fit: cover;
+    }
+    input[type=\"text\"] {
+      background: transparent;
+      border: none;
+      color: #aaa;
+      font-size: 12px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Enhypen_logo.svg">
+    <h1>PHOTOCARD ARCHIVE</h1>
+
+    <div class="buttons">
+      <button onclick="addCard('정원')">+ 정원</button>
+      <button onclick="addCard('희승')">+ 희승</button>
+      <button onclick="addCard('제이')">+ 제이</button>
+      <button onclick="addCard('제이크')">+ 제이크</button>
+      <button onclick="addCard('성훈')">+ 성훈</button>
+      <button onclick="addCard('선우')">+ 선우</button>
+      <button onclick="addCard('니키')">+ 니키</button>
+    </div>
+
+    <div id="cards"></div>
+  </div>
+
+  <script>
+    const cards = [];
+
+    function addCard(member) {
+      cards.push({ member, owned: false, memo: '', image: null });
+      render();
+    }
+
+    function render() {
+      const container = document.getElementById('cards');
+      container.innerHTML = '';
+      cards.forEach((c, i) => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+          ${c.image ? `<img src=\"${c.image}\">` : `<input type=\"file\" onchange=\"uploadImage(event, ${i})\">`}
+          <div style=\"margin-top:8px\">${c.member}</div>
+          <input type=\"text\" placeholder=\"앨범 / 메모\" oninput=\"updateMemo(event, ${i})\">
+          <button onclick=\"toggleOwned(${i})\">${c.owned ? '소장' : '미소장'}</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function toggleOwned(i) {
+      cards[i].owned = !cards[i].owned;
+      render();
+    }
+
+    function updateMemo(e, i) {
+      cards[i].memo = e.target.value;
+    }
+
+    function uploadImage(e, i) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        cards[i].image = reader.result;
+        render();
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  </script>
+</body>
+</html>
